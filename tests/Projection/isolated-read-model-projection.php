@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 use Prooph\Common\Messaging\FQCNMessageFactory;
 use Prooph\EventStore\Pdo\MySqlEventStore;
@@ -22,28 +21,28 @@ use ProophTest\EventStore\Pdo\TestUtil;
 require __DIR__ . '/../../vendor/autoload.php';
 
 $readModel = new class() implements ReadModel {
-    public function init(): void
+    public function init()
     {
     }
 
-    public function isInitialized(): bool
+    public function isInitialized()
     {
         return true;
     }
 
-    public function reset(): void
+    public function reset()
     {
     }
 
-    public function delete(): void
+    public function delete()
     {
     }
 
-    public function stack(string $operation, ...$args): void
+    public function stack($operation, ...$args)
     {
     }
 
-    public function persist(): void
+    public function persist()
     {
     }
 };
@@ -74,7 +73,7 @@ pcntl_signal(SIGQUIT, function () use ($projection) {
 $projection
     ->fromStream('user-123')
     ->when([
-        UserCreated::class => function (array $state, UserCreated $event): array {
+        UserCreated::class => function (array $state, UserCreated $event) {
             return $state;
         },
     ])

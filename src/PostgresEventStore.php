@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo;
 
@@ -71,9 +70,9 @@ final class PostgresEventStore implements PdoEventStore, TransactionalEventStore
         MessageFactory $messageFactory,
         PDO $connection,
         PersistenceStrategy $persistenceStrategy,
-        int $loadBatchSize = 10000,
-        string $eventStreamsTable = 'event_streams',
-        bool $disableTransactionHandling = false
+        $loadBatchSize = 10000,
+        $eventStreamsTable = 'event_streams',
+        $disableTransactionHandling = false
     ) {
         if (! extension_loaded('pdo_pgsql')) {
             throw ExtensionNotLoaded::with('pdo_pgsql');
@@ -89,7 +88,7 @@ final class PostgresEventStore implements PdoEventStore, TransactionalEventStore
         $this->disableTransactionHandling = $disableTransactionHandling;
     }
 
-    public function fetchStreamMetadata(StreamName $streamName): array
+    public function fetchStreamMetadata(StreamName $streamName)
     {
         $sql = <<<EOT
 SELECT metadata FROM "$this->eventStreamsTable"
@@ -116,7 +115,7 @@ EOT;
         return json_decode($stream->metadata, true);
     }
 
-    public function updateStreamMetadata(StreamName $streamName, array $newMetadata): void
+    public function updateStreamMetadata(StreamName $streamName, array $newMetadata)
     {
         $eventStreamsTable = $this->eventStreamsTable;
 
@@ -145,7 +144,7 @@ EOT;
         }
     }
 
-    public function hasStream(StreamName $streamName): bool
+    public function hasStream(StreamName $streamName)
     {
         $sql = <<<EOT
 SELECT COUNT(1) FROM "$this->eventStreamsTable"
@@ -167,7 +166,7 @@ EOT;
         return 1 === $statement->fetchColumn();
     }
 
-    public function create(Stream $stream): void
+    public function create(Stream $stream)
     {
         $streamName = $stream->streamName();
 
@@ -186,7 +185,7 @@ EOT;
         $this->appendTo($streamName, $stream->streamEvents());
     }
 
-    public function appendTo(StreamName $streamName, Iterator $streamEvents): void
+    public function appendTo(StreamName $streamName, Iterator $streamEvents)
     {
         $data = $this->persistenceStrategy->prepareData($streamEvents);
 
@@ -227,10 +226,10 @@ EOT;
 
     public function load(
         StreamName $streamName,
-        int $fromNumber = 1,
-        int $count = null,
+        $fromNumber = 1,
+        $count = null,
         MetadataMatcher $metadataMatcher = null
-    ): Iterator {
+    ) {
         $tableName = $this->persistenceStrategy->generateTableName($streamName);
 
         $query = "SELECT stream_name FROM \"$this->eventStreamsTable\" WHERE stream_name = ?";
@@ -240,7 +239,7 @@ EOT;
         if ($statement->rowCount() === 0) {
             throw StreamNotFound::with($streamName);
         }
-        [$where, $values] = $this->createWhereClause($metadataMatcher);
+        list($where, $values) = $this->createWhereClause($metadataMatcher);
         $where[] = 'no >= :fromNumber';
 
         $whereCondition = 'WHERE ' . implode(' AND ', $where);
@@ -298,14 +297,14 @@ EOT;
 
     public function loadReverse(
         StreamName $streamName,
-        int $fromNumber = null,
-        int $count = null,
+        $fromNumber = null,
+        $count = null,
         MetadataMatcher $metadataMatcher = null
-    ): Iterator {
+    ) {
         if (null === $fromNumber) {
             $fromNumber = PHP_INT_MAX;
         }
-        [$where, $values] = $this->createWhereClause($metadataMatcher);
+        list($where, $values) = $this->createWhereClause($metadataMatcher);
         $where[] = 'no <= :fromNumber';
 
         $whereCondition = 'WHERE ' . implode(' AND ', $where);
@@ -359,7 +358,7 @@ EOT;
         );
     }
 
-    public function delete(StreamName $streamName): void
+    public function delete(StreamName $streamName)
     {
         $this->removeStreamFromStreamsTable($streamName);
 
@@ -380,7 +379,7 @@ EOT;
         }
     }
 
-    public function beginTransaction(): void
+    public function beginTransaction()
     {
         if ($this->disableTransactionHandling) {
             return;
@@ -393,7 +392,7 @@ EOT;
         }
     }
 
-    public function commit(): void
+    public function commit()
     {
         if ($this->disableTransactionHandling) {
             return;
@@ -406,7 +405,7 @@ EOT;
         }
     }
 
-    public function rollback(): void
+    public function rollback()
     {
         if ($this->disableTransactionHandling) {
             return;
@@ -419,7 +418,7 @@ EOT;
         }
     }
 
-    public function inTransaction(): bool
+    public function inTransaction()
     {
         return $this->connection->inTransaction();
     }
@@ -440,12 +439,12 @@ EOT;
     }
 
     public function fetchStreamNames(
-        ?string $filter,
-        ?MetadataMatcher $metadataMatcher,
-        int $limit = 20,
-        int $offset = 0
-    ): array {
-        [$where, $values] = $this->createWhereClause($metadataMatcher);
+        $filter,
+        MetadataMatcher $metadataMatcher = null,
+        $limit = 20,
+        $offset = 0
+    ) {
+        list($where, $values) = $this->createWhereClause($metadataMatcher);
 
         if (null !== $filter) {
             $where[] = 'real_stream_name = :filter';
@@ -494,12 +493,12 @@ SQL;
     }
 
     public function fetchStreamNamesRegex(
-        string $filter,
-        ?MetadataMatcher $metadataMatcher,
-        int $limit = 20,
-        int $offset = 0
-    ): array {
-        [$where, $values] = $this->createWhereClause($metadataMatcher);
+        $filter,
+        MetadataMatcher $metadataMatcher = null,
+        $limit = 20,
+        $offset = 0
+    ) {
+        list($where, $values) = $this->createWhereClause($metadataMatcher);
 
         $where[] = 'real_stream_name ~ :filter';
         $values[':filter'] = $filter;
@@ -543,7 +542,7 @@ SQL;
         return $streamNames;
     }
 
-    public function fetchCategoryNames(?string $filter, int $limit = 20, int $offset = 0): array
+    public function fetchCategoryNames($filter, $limit = 20, $offset = 0)
     {
         $values = [];
 
@@ -590,7 +589,7 @@ SQL;
         return $categoryNames;
     }
 
-    public function fetchCategoryNamesRegex(string $filter, int $limit = 20, int $offset = 0): array
+    public function fetchCategoryNamesRegex($filter, $limit = 20, $offset = 0)
     {
         $values[':filter'] = $filter;
 
@@ -634,7 +633,7 @@ SQL;
         return $categoryNames;
     }
 
-    private function createWhereClause(?MetadataMatcher $metadataMatcher): array
+    private function createWhereClause(MetadataMatcher $metadataMatcher = null)
     {
         $where = [];
         $values = [];
@@ -711,7 +710,7 @@ SQL;
         ];
     }
 
-    private function addStreamToStreamsTable(Stream $stream): void
+    private function addStreamToStreamsTable(Stream $stream)
     {
         $realStreamName = $stream->streamName()->toString();
 
@@ -757,7 +756,7 @@ EOT;
         }
     }
 
-    private function removeStreamFromStreamsTable(StreamName $streamName): void
+    private function removeStreamFromStreamsTable(StreamName $streamName)
     {
         $deleteEventStreamTableEntrySql = <<<EOT
 DELETE FROM "$this->eventStreamsTable" WHERE real_stream_name = ?;
@@ -779,7 +778,7 @@ EOT;
         }
     }
 
-    private function createSchemaFor(string $tableName): void
+    private function createSchemaFor($tableName)
     {
         $schema = $this->persistenceStrategy->createSchema($tableName);
 

@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\Exception;
 
@@ -16,7 +15,7 @@ use Prooph\EventStore\Exception\RuntimeException as EventStoreRuntimeException;
 
 class RuntimeException extends EventStoreRuntimeException implements PdoEventStoreException
 {
-    public static function fromStatementErrorInfo(array $errorInfo): RuntimeException
+    public static function fromStatementErrorInfo(array $errorInfo)
     {
         return new self(
             sprintf(

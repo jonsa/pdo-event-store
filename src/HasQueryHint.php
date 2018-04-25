@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo;
 
@@ -18,5 +17,5 @@ namespace Prooph\EventStore\Pdo;
  */
 interface HasQueryHint
 {
-    public function indexName(): string;
+    public function indexName();
 }

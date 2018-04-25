@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo\Projection;
 
@@ -24,7 +23,7 @@ use ProophTest\EventStore\Pdo\TestUtil;
  */
 class PostgresEventStoreQueryCustomTablesTest extends PdoEventStoreQueryCustomTablesTest
 {
-    protected function setUp(): void
+    protected function setUp()
     {
         if (TestUtil::getDatabaseDriver() !== 'pdo_pgsql') {
             throw new \RuntimeException('Invalid database vendor');

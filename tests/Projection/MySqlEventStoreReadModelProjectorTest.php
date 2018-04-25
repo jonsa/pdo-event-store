@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo\Projection;
 
@@ -26,7 +25,7 @@ use ProophTest\EventStore\Pdo\TestUtil;
  */
 class MySqlEventStoreReadModelProjectorTest extends PdoEventStoreReadModelProjectorTest
 {
-    protected function setUp(): void
+    protected function setUp()
     {
         if (TestUtil::getDatabaseDriver() !== 'pdo_mysql') {
             throw new \RuntimeException('Invalid database driver');
@@ -67,7 +66,7 @@ class MySqlEventStoreReadModelProjectorTest extends PdoEventStoreReadModelProjec
     /**
      * @test
      */
-    public function it_handles_missing_projection_table(): void
+    public function it_handles_missing_projection_table()
     {
         $this->expectException(\Prooph\EventStore\Pdo\Exception\RuntimeException::class);
         $this->expectExceptionMessage("Error 42S02. Maybe the projection table is not setup?\nError-Info: Table 'event_store_tests.projections' doesn't exist");
@@ -81,7 +80,7 @@ class MySqlEventStoreReadModelProjectorTest extends PdoEventStoreReadModelProjec
         $projection
             ->fromStream('user-123')
             ->when([
-                UserCreated::class => function (array $state, UserCreated $event): array {
+                UserCreated::class => function (array $state, UserCreated $event) {
                     $this->stop();
 
                     return $state;

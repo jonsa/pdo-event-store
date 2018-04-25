@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo;
 
@@ -41,7 +40,7 @@ class PostgresEventStoreTest extends AbstractPdoEventStoreTest
      */
     protected $eventStore;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (TestUtil::getDatabaseDriver() !== 'pdo_pgsql') {
             throw new \RuntimeException('Invalid database vendor');
@@ -56,7 +55,7 @@ class PostgresEventStoreTest extends AbstractPdoEventStoreTest
     /**
      * @test
      */
-    public function it_cannot_create_new_stream_if_table_name_is_already_used(): void
+    public function it_cannot_create_new_stream_if_table_name_is_already_used()
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Error during createSchemaFor');
@@ -75,7 +74,7 @@ class PostgresEventStoreTest extends AbstractPdoEventStoreTest
     /**
      * @test
      */
-    public function it_loads_correctly_using_single_stream_per_aggregate_type_strategy(): void
+    public function it_loads_correctly_using_single_stream_per_aggregate_type_strategy()
     {
         $this->setupEventStoreWith(new PostgresSingleStreamStrategy(), 5);
 
@@ -104,7 +103,7 @@ class PostgresEventStoreTest extends AbstractPdoEventStoreTest
     /**
      * @test
      */
-    public function it_fails_to_write_with_duplicate_version_and_mulitple_streams_per_aggregate_strategy(): void
+    public function it_fails_to_write_with_duplicate_version_and_mulitple_streams_per_aggregate_strategy()
     {
         $this->expectException(ConcurrencyException::class);
 
@@ -137,7 +136,7 @@ class PostgresEventStoreTest extends AbstractPdoEventStoreTest
         $this->eventStore->appendTo(new StreamName('Prooph\Model\User'), new \ArrayIterator([$streamEvent]));
     }
 
-    public function it_ignores_transaction_handling_if_flag_is_enabled(): void
+    public function it_ignores_transaction_handling_if_flag_is_enabled()
     {
         $connection = $this->prophesize(PDO::class);
         $connection->beginTransaction()->shouldNotBeCalled();
@@ -156,7 +155,7 @@ class PostgresEventStoreTest extends AbstractPdoEventStoreTest
     /**
      * @test
      */
-    public function it_removes_stream_if_stream_table_hasnt_been_created(): void
+    public function it_removes_stream_if_stream_table_hasnt_been_created()
     {
         $strategy = $this->createMock(PersistenceStrategy::class);
         $strategy->method('createSchema')->willReturn([

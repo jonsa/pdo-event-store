@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\Exception;
 
@@ -16,7 +15,7 @@ use Prooph\EventStore\Exception\RuntimeException as EventStoreRuntimeException;
 
 class JsonException extends EventStoreRuntimeException implements PdoEventStoreException
 {
-    public static function whileDecode(string $msg, int $code, string $json): JsonException
+    public static function whileDecode($msg, $code, $json)
     {
         return new self(
             sprintf(

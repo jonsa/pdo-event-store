@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo\Projection;
 
@@ -45,7 +44,7 @@ class PostgresProjectionManagerTest extends AbstractProjectionManagerTest
      */
     private $connection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (TestUtil::getDatabaseDriver() !== 'pdo_pgsql') {
             throw new \RuntimeException('Invalid database vendor');
@@ -62,7 +61,7 @@ class PostgresProjectionManagerTest extends AbstractProjectionManagerTest
         $this->projectionManager = new PostgresProjectionManager($this->eventStore, $this->connection);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         TestUtil::tearDownDatabase();
     }
@@ -70,7 +69,7 @@ class PostgresProjectionManagerTest extends AbstractProjectionManagerTest
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_event_store_instance_passed(): void
+    public function it_throws_exception_when_invalid_event_store_instance_passed()
     {
         $this->expectException(\Prooph\EventStore\Exception\InvalidArgumentException::class);
 
@@ -82,7 +81,7 @@ class PostgresProjectionManagerTest extends AbstractProjectionManagerTest
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed(): void
+    public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed()
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -96,7 +95,7 @@ class PostgresProjectionManagerTest extends AbstractProjectionManagerTest
     /**
      * @test
      */
-    public function it_throws_exception_when_fetching_projecton_names_with_missing_db_table(): void
+    public function it_throws_exception_when_fetching_projecton_names_with_missing_db_table()
     {
         $this->expectException(RuntimeException::class);
 
@@ -107,7 +106,7 @@ class PostgresProjectionManagerTest extends AbstractProjectionManagerTest
     /**
      * @test
      */
-    public function it_throws_exception_when_fetching_projection_names_using_invalid_regex(): void
+    public function it_throws_exception_when_fetching_projection_names_using_invalid_regex()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid regex pattern given');
@@ -118,7 +117,7 @@ class PostgresProjectionManagerTest extends AbstractProjectionManagerTest
     /**
      * @test
      */
-    public function it_throws_exception_when_fetching_projecton_names_regex_with_missing_db_table(): void
+    public function it_throws_exception_when_fetching_projecton_names_regex_with_missing_db_table()
     {
         $this->expectException(RuntimeException::class);
 

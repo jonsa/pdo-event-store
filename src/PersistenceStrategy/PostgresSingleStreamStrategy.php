@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\PersistenceStrategy;
 
@@ -22,7 +21,7 @@ final class PostgresSingleStreamStrategy implements PersistenceStrategy
      * @param string $tableName
      * @return string[]
      */
-    public function createSchema(string $tableName): array
+    public function createSchema($tableName)
     {
         $statement = <<<EOT
 CREATE TABLE "$tableName" (
@@ -57,7 +56,7 @@ EOT;
         ];
     }
 
-    public function columnNames(): array
+    public function columnNames()
     {
         return [
             'event_id',
@@ -68,7 +67,7 @@ EOT;
         ];
     }
 
-    public function prepareData(Iterator $streamEvents): array
+    public function prepareData(Iterator $streamEvents)
     {
         $data = [];
 
@@ -83,7 +82,7 @@ EOT;
         return $data;
     }
 
-    public function generateTableName(StreamName $streamName): string
+    public function generateTableName(StreamName $streamName)
     {
         return '_' . sha1($streamName->toString());
     }

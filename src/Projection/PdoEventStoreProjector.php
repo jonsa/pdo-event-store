@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\Projection;
 
@@ -35,7 +34,7 @@ use Prooph\EventStore\Util\ArrayCache;
 
 final class PdoEventStoreProjector implements Projector
 {
-    private const UNIQUE_VIOLATION_ERROR_CODES = [
+    const UNIQUE_VIOLATION_ERROR_CODES = [
         'pgsql' => '23505',
         'mysql' => '23000',
     ];
@@ -153,14 +152,14 @@ final class PdoEventStoreProjector implements Projector
     public function __construct(
         EventStore $eventStore,
         PDO $connection,
-        string $name,
-        string $eventStreamsTable,
-        string $projectionsTable,
-        int $lockTimeoutMs,
-        int $cacheSize,
-        int $persistBlockSize,
-        int $sleep,
-        bool $triggerPcntlSignalDispatch = false
+        $name,
+        $eventStreamsTable,
+        $projectionsTable,
+        $lockTimeoutMs,
+        $cacheSize,
+        $persistBlockSize,
+        $sleep,
+        $triggerPcntlSignalDispatch = false
     ) {
         if ($triggerPcntlSignalDispatch && ! extension_loaded('pcntl')) {
             throw Exception\ExtensionNotLoadedException::withName('pcntl');
@@ -188,7 +187,7 @@ final class PdoEventStoreProjector implements Projector
         }
     }
 
-    public function init(Closure $callback): Projector
+    public function init(Closure $callback)
     {
         if (null !== $this->initCallback) {
             throw new Exception\RuntimeException('Projection already initialized');
@@ -207,7 +206,7 @@ final class PdoEventStoreProjector implements Projector
         return $this;
     }
 
-    public function fromStream(string $streamName): Projector
+    public function fromStream($streamName)
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -218,7 +217,7 @@ final class PdoEventStoreProjector implements Projector
         return $this;
     }
 
-    public function fromStreams(string ...$streamNames): Projector
+    public function fromStreams(...$streamNames)
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -231,7 +230,7 @@ final class PdoEventStoreProjector implements Projector
         return $this;
     }
 
-    public function fromCategory(string $name): Projector
+    public function fromCategory($name)
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -242,7 +241,7 @@ final class PdoEventStoreProjector implements Projector
         return $this;
     }
 
-    public function fromCategories(string ...$names): Projector
+    public function fromCategories(...$names)
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -255,7 +254,7 @@ final class PdoEventStoreProjector implements Projector
         return $this;
     }
 
-    public function fromAll(): Projector
+    public function fromAll()
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -266,7 +265,7 @@ final class PdoEventStoreProjector implements Projector
         return $this;
     }
 
-    public function when(array $handlers): Projector
+    public function when(array $handlers)
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new Exception\RuntimeException('When was already called');
@@ -287,7 +286,7 @@ final class PdoEventStoreProjector implements Projector
         return $this;
     }
 
-    public function whenAny(Closure $handler): Projector
+    public function whenAny(Closure $handler)
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new Exception\RuntimeException('When was already called');
@@ -298,7 +297,7 @@ final class PdoEventStoreProjector implements Projector
         return $this;
     }
 
-    public function emit(Message $event): void
+    public function emit(Message $event)
     {
         if (! $this->streamCreated || ! $this->eventStore->hasStream(new StreamName($this->name))) {
             $this->eventStore->create(new Stream(new StreamName($this->name), new EmptyIterator()));
@@ -308,7 +307,7 @@ final class PdoEventStoreProjector implements Projector
         $this->linkTo($this->name, $event);
     }
 
-    public function linkTo(string $streamName, Message $event): void
+    public function linkTo($streamName, Message $event)
     {
         $sn = new StreamName($streamName);
 
@@ -326,7 +325,7 @@ final class PdoEventStoreProjector implements Projector
         }
     }
 
-    public function reset(): void
+    public function reset()
     {
         $this->streamPositions = [];
 
@@ -371,7 +370,7 @@ EOT;
         }
     }
 
-    public function stop(): void
+    public function stop()
     {
         $this->isStopped = true;
 
@@ -393,17 +392,17 @@ EOT;
         $this->status = ProjectionStatus::IDLE();
     }
 
-    public function getState(): array
+    public function getState()
     {
         return $this->state;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
 
-    public function delete(bool $deleteEmittedEvents): void
+    public function delete($deleteEmittedEvents)
     {
         $projectionsTable = $this->quoteTableName($this->projectionsTable);
         $deleteProjectionSql = <<<EOT
@@ -445,7 +444,7 @@ EOT;
         $this->streamPositions = [];
     }
 
-    public function run(bool $keepRunning = true): void
+    public function run($keepRunning = true)
     {
         if (null === $this->query
             || (null === $this->handler && empty($this->handlers))
@@ -541,7 +540,7 @@ EOT;
         }
     }
 
-    private function fetchRemoteStatus(): ProjectionStatus
+    private function fetchRemoteStatus()
     {
         $projectionsTable = $this->quoteTableName($this->projectionsTable);
         $sql = <<<EOT
@@ -573,7 +572,7 @@ EOT;
         return ProjectionStatus::byValue($result->status);
     }
 
-    private function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
+    private function handleStreamWithSingleHandler($streamName, Iterator $events)
     {
         $this->currentStreamName = $streamName;
         $handler = $this->handler;
@@ -600,7 +599,7 @@ EOT;
         }
     }
 
-    private function handleStreamWithHandlers(string $streamName, Iterator $events): void
+    private function handleStreamWithHandlers($streamName, Iterator $events)
     {
         $this->currentStreamName = $streamName;
 
@@ -632,7 +631,7 @@ EOT;
         }
     }
 
-    private function createHandlerContext(?string &$streamName)
+    private function createHandlerContext(&$streamName)
     {
         return new class($this, $streamName) {
             /**
@@ -645,35 +644,35 @@ EOT;
              */
             private $streamName;
 
-            public function __construct(Projector $projector, ?string &$streamName)
+            public function __construct(Projector $projector, &$streamName)
             {
                 $this->projector = $projector;
                 $this->streamName = &$streamName;
             }
 
-            public function stop(): void
+            public function stop()
             {
                 $this->projector->stop();
             }
 
-            public function linkTo(string $streamName, Message $event): void
+            public function linkTo($streamName, Message $event)
             {
                 $this->projector->linkTo($streamName, $event);
             }
 
-            public function emit(Message $event): void
+            public function emit(Message $event)
             {
                 $this->projector->emit($event);
             }
 
-            public function streamName(): ?string
+            public function streamName()
             {
                 return $this->streamName;
             }
         };
     }
 
-    private function load(): void
+    private function load()
     {
         $projectionsTable = $this->quoteTableName($this->projectionsTable);
         $sql = <<<EOT
@@ -701,7 +700,7 @@ EOT;
         }
     }
 
-    private function createProjection(): void
+    private function createProjection()
     {
         $projectionsTable = $this->quoteTableName($this->projectionsTable);
         $sql = <<<EOT
@@ -727,7 +726,7 @@ EOT;
     /**
      * @throws Exception\RuntimeException
      */
-    private function acquireLock(): void
+    private function acquireLock()
     {
         $now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
         $nowString = $now->format('Y-m-d\TH:i:s.u');
@@ -762,7 +761,7 @@ EOT;
         $this->status = ProjectionStatus::RUNNING();
     }
 
-    private function updateLock(): void
+    private function updateLock()
     {
         $now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
 
@@ -800,7 +799,7 @@ EOT;
         }
     }
 
-    private function releaseLock(): void
+    private function releaseLock()
     {
         $projectionsTable = $this->quoteTableName($this->projectionsTable);
         $sql = <<<EOT
@@ -821,7 +820,7 @@ EOT;
         $this->status = ProjectionStatus::IDLE();
     }
 
-    private function persist(): void
+    private function persist()
     {
         $now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
 
@@ -850,7 +849,7 @@ EOT;
         }
     }
 
-    private function prepareStreamPositions(): void
+    private function prepareStreamPositions()
     {
         $streamPositions = [];
 
@@ -915,7 +914,7 @@ EOT;
         $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
     }
 
-    private function createLockUntilString(DateTimeImmutable $from): string
+    private function createLockUntilString(DateTimeImmutable $from)
     {
         $micros = (string) ((int) $from->format('u') + ($this->lockTimeoutMs * 1000));
 
@@ -930,7 +929,7 @@ EOT;
         return $from->modify('+' . $secs .' seconds')->format('Y-m-d\TH:i:s') . '.' . $resultMicros;
     }
 
-    private function quoteTableName(string $tableName): string
+    private function quoteTableName($tableName)
     {
         switch ($this->vendor) {
             case 'pgsql':

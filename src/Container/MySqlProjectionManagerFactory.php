@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\Container;
 
@@ -16,7 +15,7 @@ use Prooph\EventStore\Pdo\Projection\MySqlProjectionManager;
 
 class MySqlProjectionManagerFactory extends AbstractProjectionManagerFactory
 {
-    protected function projectionManagerClassName(): string
+    protected function projectionManagerClassName()
     {
         return MySqlProjectionManager::class;
     }

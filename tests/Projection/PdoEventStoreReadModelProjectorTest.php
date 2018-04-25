@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo\Projection;
 
@@ -46,12 +45,12 @@ abstract class PdoEventStoreReadModelProjectorTest extends AbstractEventStoreRea
      */
     protected $connection;
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         TestUtil::tearDownDatabase();
     }
 
-    protected function prepareEventStream(string $name): void
+    protected function prepareEventStream($name)
     {
         $events = [];
         $events[] = UserCreated::with([
@@ -72,7 +71,7 @@ abstract class PdoEventStoreReadModelProjectorTest extends AbstractEventStoreRea
     /**
      * @test
      */
-    public function it_updates_read_model_using_when_and_loads_and_continues_again(): void
+    public function it_updates_read_model_using_when_and_loads_and_continues_again()
     {
         $this->prepareEventStream('user-123');
 
@@ -83,10 +82,10 @@ abstract class PdoEventStoreReadModelProjectorTest extends AbstractEventStoreRea
         $projection
             ->fromAll()
             ->when([
-                UserCreated::class => function ($state, Message $event): void {
+                UserCreated::class => function ($state, Message $event) {
                     $this->readModel()->stack('insert', 'name', $event->payload()['name']);
                 },
-                UsernameChanged::class => function ($state, Message $event): void {
+                UsernameChanged::class => function ($state, Message $event) {
                     $this->readModel()->stack('update', 'name', $event->payload()['name']);
 
                     if ($event->metadata()['_aggregate_version'] === 50) {
@@ -115,10 +114,10 @@ abstract class PdoEventStoreReadModelProjectorTest extends AbstractEventStoreRea
         $projection
             ->fromAll()
             ->when([
-                UserCreated::class => function ($state, Message $event): void {
+                UserCreated::class => function ($state, Message $event) {
                     $this->readModel()->stack('insert', 'name', $event->payload()['name']);
                 },
-                UsernameChanged::class => function ($state, Message $event): void {
+                UsernameChanged::class => function ($state, Message $event) {
                     $this->readModel()->stack('update', 'name', $event->payload()['name']);
 
                     if ($event->metadata()['_aggregate_version'] === 100) {
@@ -138,7 +137,7 @@ abstract class PdoEventStoreReadModelProjectorTest extends AbstractEventStoreRea
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed(): void
+    public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown event store instance given');
@@ -163,7 +162,7 @@ abstract class PdoEventStoreReadModelProjectorTest extends AbstractEventStoreRea
     /**
      * @test
      */
-    public function it_throws_exception_when_unknown_event_store_instance_passed(): void
+    public function it_throws_exception_when_unknown_event_store_instance_passed()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown event store instance given');
@@ -188,7 +187,7 @@ abstract class PdoEventStoreReadModelProjectorTest extends AbstractEventStoreRea
     /**
      * @test
      */
-    public function it_dispatches_pcntl_signals_when_enabled(): void
+    public function it_dispatches_pcntl_signals_when_enabled()
     {
         if (! extension_loaded('pcntl')) {
             $this->markTestSkipped('The PCNTL extension is not available.');

@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo\Container;
 
@@ -34,7 +33,7 @@ final class PostgresEventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_adapter_via_connection_service(): void
+    public function it_creates_adapter_via_connection_service()
     {
         $config['prooph']['event_store']['default'] = [
             'connection' => 'my_connection',
@@ -60,7 +59,7 @@ final class PostgresEventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_wraps_action_event_emitter(): void
+    public function it_wraps_action_event_emitter()
     {
         $config['prooph']['event_store']['custom'] = [
             'connection' => 'my_connection',
@@ -85,7 +84,7 @@ final class PostgresEventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_injects_plugins(): void
+    public function it_injects_plugins()
     {
         $config['prooph']['event_store']['custom'] = [
             'connection' => 'my_connection',
@@ -116,7 +115,7 @@ final class PostgresEventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_plugin_configured(): void
+    public function it_throws_exception_when_invalid_plugin_configured()
     {
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('Plugin plugin does not implement the Plugin interface');
@@ -145,7 +144,7 @@ final class PostgresEventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_injects_metadata_enrichers(): void
+    public function it_injects_metadata_enrichers()
     {
         $config['prooph']['event_store']['custom'] = [
             'connection' => 'my_connection',
@@ -177,7 +176,7 @@ final class PostgresEventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_metadata_enricher_configured(): void
+    public function it_throws_exception_when_invalid_metadata_enricher_configured()
     {
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('Metadata enricher foobar does not implement the MetadataEnricher interface');
@@ -206,7 +205,7 @@ final class PostgresEventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_container_given(): void
+    public function it_throws_exception_when_invalid_container_given()
     {
         $this->expectException(InvalidArgumentException::class);
 

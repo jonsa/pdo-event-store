@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\Container;
 
@@ -54,7 +53,7 @@ abstract class AbstractEventStoreFactory implements
      *
      * @throws InvalidArgumentException
      */
-    public static function __callStatic(string $name, array $arguments): EventStore
+    public static function __callStatic($name, array $arguments)
     {
         if (! isset($arguments[0]) || ! $arguments[0] instanceof ContainerInterface) {
             throw new InvalidArgumentException(
@@ -65,12 +64,12 @@ abstract class AbstractEventStoreFactory implements
         return (new static($name))->__invoke($arguments[0]);
     }
 
-    public function __construct(string $configId = 'default')
+    public function __construct($configId = 'default')
     {
         $this->configId = $configId;
     }
 
-    public function __invoke(ContainerInterface $container): EventStore
+    public function __invoke(ContainerInterface $container)
     {
         $config = $container->get('config');
         $config = $this->options($config, $this->configId);
@@ -131,16 +130,16 @@ abstract class AbstractEventStoreFactory implements
         return $wrapper;
     }
 
-    abstract protected function createActionEventEmitterEventStore(EventStore $eventStore): ActionEventEmitterEventStore;
+    abstract protected function createActionEventEmitterEventStore(EventStore $eventStore);
 
-    abstract protected function eventStoreClassName(): string;
+    abstract protected function eventStoreClassName();
 
-    public function dimensions(): iterable
+    public function dimensions()
     {
         return ['prooph', 'event_store'];
     }
 
-    public function mandatoryOptions(): iterable
+    public function mandatoryOptions()
     {
         return [
             'connection',

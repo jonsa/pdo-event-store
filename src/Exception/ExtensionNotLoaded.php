@@ -8,13 +8,12 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\Exception;
 
 class ExtensionNotLoaded extends RuntimeException
 {
-    public static function with(string $extensionNme): ExtensionNotLoaded
+    public static function with($extensionNme)
     {
         return new self(sprintf('Extension "%s" is not loaded', $extensionNme));
     }

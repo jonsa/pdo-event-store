@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\Container;
 
@@ -47,7 +46,7 @@ abstract class AbstractProjectionManagerFactory implements
      *
      * @throws InvalidArgumentException
      */
-    public static function __callStatic(string $name, array $arguments): ProjectionManager
+    public static function __callStatic($name, array $arguments)
     {
         if (! isset($arguments[0]) || ! $arguments[0] instanceof ContainerInterface) {
             throw new InvalidArgumentException(
@@ -58,12 +57,12 @@ abstract class AbstractProjectionManagerFactory implements
         return (new static($name))->__invoke($arguments[0]);
     }
 
-    public function __construct(string $configId = 'default')
+    public function __construct($configId = 'default')
     {
         $this->configId = $configId;
     }
 
-    public function __invoke(ContainerInterface $container): ProjectionManager
+    public function __invoke(ContainerInterface $container)
     {
         $config = $container->get('config');
         $config = $this->options($config, $this->configId);
@@ -78,19 +77,19 @@ abstract class AbstractProjectionManagerFactory implements
         );
     }
 
-    abstract protected function projectionManagerClassName(): string;
+    abstract protected function projectionManagerClassName();
 
-    public function dimensions(): iterable
+    public function dimensions()
     {
         return ['prooph', 'projection_manager'];
     }
 
-    public function mandatoryOptions(): iterable
+    public function mandatoryOptions()
     {
         return ['connection'];
     }
 
-    public function defaultOptions(): iterable
+    public function defaultOptions()
     {
         return [
             'event_store' => EventStore::class,

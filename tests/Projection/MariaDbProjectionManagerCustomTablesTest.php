@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo\Projection;
 
@@ -44,7 +43,7 @@ class MariaDbProjectionManagerCustomTablesTest extends AbstractProjectionManager
      */
     private $connection;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (TestUtil::getDatabaseDriver() !== 'pdo_mysql') {
             throw new \RuntimeException('Invalid database driver');
@@ -68,7 +67,7 @@ class MariaDbProjectionManagerCustomTablesTest extends AbstractProjectionManager
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         TestUtil::tearDownDatabase();
     }
@@ -76,7 +75,7 @@ class MariaDbProjectionManagerCustomTablesTest extends AbstractProjectionManager
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_event_store_instance_passed(): void
+    public function it_throws_exception_when_invalid_event_store_instance_passed()
     {
         $this->expectException(\Prooph\EventStore\Exception\InvalidArgumentException::class);
 
@@ -88,7 +87,7 @@ class MariaDbProjectionManagerCustomTablesTest extends AbstractProjectionManager
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed(): void
+    public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed()
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -102,7 +101,7 @@ class MariaDbProjectionManagerCustomTablesTest extends AbstractProjectionManager
     /**
      * @test
      */
-    public function it_throws_exception_when_fetching_projecton_names_with_missing_db_table(): void
+    public function it_throws_exception_when_fetching_projecton_names_with_missing_db_table()
     {
         $this->expectException(RuntimeException::class);
 
@@ -113,7 +112,7 @@ class MariaDbProjectionManagerCustomTablesTest extends AbstractProjectionManager
     /**
      * @test
      */
-    public function it_throws_exception_when_fetching_projecton_names_regex_with_missing_db_table(): void
+    public function it_throws_exception_when_fetching_projecton_names_regex_with_missing_db_table()
     {
         $this->expectException(RuntimeException::class);
 

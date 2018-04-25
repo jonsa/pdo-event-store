@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo;
 
@@ -46,9 +45,9 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     protected $persistenceStrategy;
 
     protected function setupEventStoreWith(
-        PersistenceStrategy $persistenceStrategy, int $loadBatchSize = 10000,
-        string $eventStreamsTable = 'event_streams',
-        bool $disableTransactionHandling = false): void
+        PersistenceStrategy $persistenceStrategy, $loadBatchSize = 10000,
+        $eventStreamsTable = 'event_streams',
+        $disableTransactionHandling = false)
     {
         $this->persistenceStrategy = $persistenceStrategy;
 
@@ -73,7 +72,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
         );
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         TestUtil::tearDownDatabase();
     }
@@ -81,7 +80,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_handles_not_existing_event_streams_table(): void
+    public function it_handles_not_existing_event_streams_table()
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Maybe the event streams table is not setup?');
@@ -94,7 +93,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_throws_exception_using_aggregate_stream_strategy_if_aggregate_version_is_missing_in_metadata(): void
+    public function it_throws_exception_using_aggregate_stream_strategy_if_aggregate_version_is_missing_in_metadata()
     {
         $this->expectException(RuntimeException::class);
 
@@ -114,7 +113,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_fails_to_write_duplicate_version_using_aggregate_stream_strategy(): void
+    public function it_fails_to_write_duplicate_version_using_aggregate_stream_strategy()
     {
         $this->expectException(ConcurrencyException::class);
 
@@ -148,7 +147,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_throws_exception_when_fetching_stream_names_with_missing_db_table(): void
+    public function it_throws_exception_when_fetching_stream_names_with_missing_db_table()
     {
         $this->expectException(RuntimeException::class);
 
@@ -159,7 +158,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_throws_exception_when_fetching_stream_names_regex_with_missing_db_table(): void
+    public function it_throws_exception_when_fetching_stream_names_regex_with_missing_db_table()
     {
         $this->expectException(RuntimeException::class);
 
@@ -170,7 +169,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_throws_exception_when_fetching_category_names_with_missing_db_table(): void
+    public function it_throws_exception_when_fetching_category_names_with_missing_db_table()
     {
         $this->expectException(RuntimeException::class);
 
@@ -181,7 +180,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_throws_exception_when_fetching_category_names_regex_with_missing_db_table(): void
+    public function it_throws_exception_when_fetching_category_names_regex_with_missing_db_table()
     {
         $this->expectException(RuntimeException::class);
 
@@ -192,7 +191,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_returns_only_matched_metadata(): void
+    public function it_returns_only_matched_metadata()
     {
         $event = UserCreated::with(['name' => 'John'], 1);
         $event = $event->withAddedMetadata('foo', 'bar');
@@ -239,7 +238,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_returns_only_matched_metadata_reverse(): void
+    public function it_returns_only_matched_metadata_reverse()
     {
         $event = UserCreated::with(['name' => 'John'], 1);
         $event = $event->withAddedMetadata('foo', 'bar');
@@ -288,7 +287,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_returns_only_matched_message_property(): void
+    public function it_returns_only_matched_message_property()
     {
         $event = UserCreated::with(['name' => 'John'], 1);
         $event = $event->withAddedMetadata('foo', 'bar');
@@ -377,7 +376,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_returns_only_matched_message_property_reverse(): void
+    public function it_returns_only_matched_message_property_reverse()
     {
         $event = UserCreated::with(['name' => 'John'], 1);
         $event = $event->withAddedMetadata('foo', 'bar');
@@ -464,7 +463,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_adds_event_position_to_metadata_if_field_not_occupied(): void
+    public function it_adds_event_position_to_metadata_if_field_not_occupied()
     {
         $event = UserCreated::with(['name' => 'John'], 1);
 
@@ -484,7 +483,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_does_not_add_event_position_to_metadata_if_field_is_occupied(): void
+    public function it_does_not_add_event_position_to_metadata_if_field_is_occupied()
     {
         $event = UserCreated::with(['name' => 'John'], 1);
         $event = $event->withAddedMetadata('_position', 'foo');
@@ -506,7 +505,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
      * @test
      * issue: https://github.com/prooph/pdo-event-store/issues/106
      */
-    public function it_doesnt_double_escape_metadata(): void
+    public function it_doesnt_double_escape_metadata()
     {
         $event = UserCreated::with(['name' => 'John'], 1);
         $event = $event->withAddedMetadata('_aggregate_type', 'Prooph\Model\User');
@@ -526,7 +525,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @test
      */
-    public function it_does_not_use_json_force_object_for_stream_metadata_and_event_payload_and_metadata(): void
+    public function it_does_not_use_json_force_object_for_stream_metadata_and_event_payload_and_metadata()
     {
         $event = UserCreated::with(['name' => ['John', 'Jane']], 1);
         $event = $event->withAddedMetadata('key', 'value');
@@ -563,7 +562,7 @@ abstract class AbstractPdoEventStoreTest extends AbstractEventStoreTest
     /**
      * @return Message[]
      */
-    protected function getMultipleTestEvents(): array
+    protected function getMultipleTestEvents()
     {
         $events = [];
 

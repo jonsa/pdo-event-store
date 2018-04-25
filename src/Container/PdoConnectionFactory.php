@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\Container;
 
@@ -44,7 +43,7 @@ class PdoConnectionFactory implements ProvidesDefaultOptions, RequiresConfigId, 
      *
      * @throws InvalidArgumentException
      */
-    public static function __callStatic(string $name, array $arguments): PDO
+    public static function __callStatic($name, array $arguments)
     {
         if (! isset($arguments[0]) || ! $arguments[0] instanceof ContainerInterface) {
             throw new InvalidArgumentException(
@@ -55,12 +54,12 @@ class PdoConnectionFactory implements ProvidesDefaultOptions, RequiresConfigId, 
         return (new static($name))->__invoke($arguments[0]);
     }
 
-    public function __construct(string $configId = 'default')
+    public function __construct($configId = 'default')
     {
         $this->configId = $configId;
     }
 
-    public function __invoke(ContainerInterface $container): PDO
+    public function __invoke(ContainerInterface $container)
     {
         $config = $container->get('config');
         $config = $this->options($config, $this->configId);
@@ -72,7 +71,7 @@ class PdoConnectionFactory implements ProvidesDefaultOptions, RequiresConfigId, 
         );
     }
 
-    public function dimensions(): iterable
+    public function dimensions()
     {
         return [
             'prooph',
@@ -80,7 +79,7 @@ class PdoConnectionFactory implements ProvidesDefaultOptions, RequiresConfigId, 
         ];
     }
 
-    public function defaultOptions(): iterable
+    public function defaultOptions()
     {
         return [
             'host' => '127.0.0.1',
@@ -89,7 +88,7 @@ class PdoConnectionFactory implements ProvidesDefaultOptions, RequiresConfigId, 
         ];
     }
 
-    public function mandatoryOptions(): iterable
+    public function mandatoryOptions()
     {
         return [
             'schema',
@@ -99,7 +98,7 @@ class PdoConnectionFactory implements ProvidesDefaultOptions, RequiresConfigId, 
         ];
     }
 
-    private function buildConnectionDns(array $params): string
+    private function buildConnectionDns(array $params)
     {
         $dsn = $params['schema'] . ':';
 

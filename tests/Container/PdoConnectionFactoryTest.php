@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\Container;
 
@@ -50,7 +49,7 @@ class PdoConnectionFactoryTest extends TestCase
      * @test
      * @group mysql
      */
-    public function it_creates_mysql_connection(): void
+    public function it_creates_mysql_connection()
     {
         $container = $this->prophesize(ContainerInterface::class);
 
@@ -66,7 +65,7 @@ class PdoConnectionFactoryTest extends TestCase
      * @test
      * @group mysql
      */
-    public function it_creates_mysql_connection_via_callstatic(): void
+    public function it_creates_mysql_connection_via_callstatic()
     {
         $container = $this->prophesize(ContainerInterface::class);
 
@@ -82,7 +81,7 @@ class PdoConnectionFactoryTest extends TestCase
      * @test
      * @group postgres
      */
-    public function it_creates_postgres_connection(): void
+    public function it_creates_postgres_connection()
     {
         $container = $this->prophesize(ContainerInterface::class);
 
@@ -98,7 +97,7 @@ class PdoConnectionFactoryTest extends TestCase
      * @test
      * @group postgres
      */
-    public function it_creates_postgres_connection_via_callstatic(): void
+    public function it_creates_postgres_connection_via_callstatic()
     {
         $container = $this->prophesize(ContainerInterface::class);
 
@@ -113,7 +112,7 @@ class PdoConnectionFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_container_given(): void
+    public function it_throws_exception_when_invalid_container_given()
     {
         $this->expectException(InvalidArgumentException::class);
 

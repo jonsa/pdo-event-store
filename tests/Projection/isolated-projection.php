@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 use Prooph\Common\Messaging\FQCNMessageFactory;
 use Prooph\EventStore\Pdo\MySqlEventStore;
@@ -45,7 +44,7 @@ pcntl_signal(SIGQUIT, function () use ($projection) {
 $projection
     ->fromStream('user-123')
     ->when([
-        UserCreated::class => function (array $state, UserCreated $event): array {
+        UserCreated::class => function (array $state, UserCreated $event) {
             return $state;
         },
     ])

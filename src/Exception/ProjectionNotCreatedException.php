@@ -8,13 +8,12 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\Exception;
 
 class ProjectionNotCreatedException extends RuntimeException
 {
-    public static function with(string $projectionName): ProjectionNotCreatedException
+    public static function with($projectionName)
     {
         return new self(sprintf('Projection "%s" was not created', $projectionName));
     }

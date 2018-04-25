@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\Container;
 
@@ -21,7 +20,7 @@ use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 
 final class PostgresEventStoreFactory extends AbstractEventStoreFactory
 {
-    protected function createActionEventEmitterEventStore(EventStore $eventStore): ActionEventEmitterEventStore
+    protected function createActionEventEmitterEventStore(EventStore $eventStore)
     {
         return new TransactionalActionEventEmitterEventStore(
             $eventStore,
@@ -45,12 +44,12 @@ final class PostgresEventStoreFactory extends AbstractEventStoreFactory
         );
     }
 
-    protected function eventStoreClassName(): string
+    protected function eventStoreClassName()
     {
         return PostgresEventStore::class;
     }
 
-    public function defaultOptions(): iterable
+    public function defaultOptions()
     {
         return [
             'load_batch_size' => 1000,

@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo;
 
@@ -34,7 +33,7 @@ abstract class TestUtil
      */
     private static $connection;
 
-    public static function getConnection(): PDO
+    public static function getConnection()
     {
         if (! isset(self::$connection)) {
             $connectionParams = self::getConnectionParams();
@@ -75,7 +74,7 @@ abstract class TestUtil
         return self::$connection;
     }
 
-    public static function getDatabaseName(): string
+    public static function getDatabaseName()
     {
         if (! self::hasRequiredConnectionParams()) {
             throw new \RuntimeException('No connection params given');
@@ -84,7 +83,7 @@ abstract class TestUtil
         return getenv('DB_NAME');
     }
 
-    public static function getDatabaseDriver(): string
+    public static function getDatabaseDriver()
     {
         if (! self::hasRequiredConnectionParams()) {
             throw new \RuntimeException('No connection params given');
@@ -93,7 +92,7 @@ abstract class TestUtil
         return getenv('DB_DRIVER');
     }
 
-    public static function getDatabaseVendor(): string
+    public static function getDatabaseVendor()
     {
         if (! self::hasRequiredConnectionParams()) {
             throw new \RuntimeException('No connection params given');
@@ -102,7 +101,7 @@ abstract class TestUtil
         return explode('_', getenv('DB'))[0];
     }
 
-    public static function getConnectionParams(): array
+    public static function getConnectionParams()
     {
         if (! self::hasRequiredConnectionParams()) {
             throw new \RuntimeException('No connection params given');
@@ -111,7 +110,7 @@ abstract class TestUtil
         return self::getSpecifiedConnectionParams();
     }
 
-    public static function initDefaultDatabaseTables(PDO $connection): void
+    public static function initDefaultDatabaseTables(PDO $connection)
     {
         $vendor = self::getDatabaseVendor();
 
@@ -119,7 +118,7 @@ abstract class TestUtil
         $connection->exec(file_get_contents(__DIR__ . '/../scripts/' . $vendor . '/02_projections_table.sql'));
     }
 
-    public static function initCustomDatabaseTables(PDO $connection): void
+    public static function initCustomDatabaseTables(PDO $connection)
     {
         $vendor = self::getDatabaseVendor();
 
@@ -127,7 +126,7 @@ abstract class TestUtil
         $connection->exec(file_get_contents(__DIR__ . '/Assets/scripts/' . $vendor . '/02_projections_table.sql'));
     }
 
-    public static function tearDownDatabase(): void
+    public static function tearDownDatabase()
     {
         $connection = self::getConnection();
         $vendor = self::getDatabaseVendor();
@@ -155,9 +154,17 @@ abstract class TestUtil
         }
     }
 
-    private static function hasRequiredConnectionParams(): bool
+    private static function hasRequiredConnectionParams()
     {
-        $env = getenv();
+        $env = [
+            'DB' => getenv('DB'),
+            'DB_DRIVER' => getenv('DB_DRIVER'),
+            'DB_USERNAME' => getenv('DB_USERNAME'),
+            'DB_HOST' => getenv('DB_HOST'),
+            'DB_NAME' => getenv('DB_NAME'),
+            'DB_PORT' => getenv('DB_PORT'),
+            'DB_CHARSET' => getenv('DB_CHARSET')
+        ];
 
         return isset(
             $env['DB'],
@@ -170,7 +177,7 @@ abstract class TestUtil
         );
     }
 
-    private static function getSpecifiedConnectionParams(): array
+    private static function getSpecifiedConnectionParams()
     {
         return [
             'driver' => getenv('DB_DRIVER'),
@@ -184,7 +191,7 @@ abstract class TestUtil
         ];
     }
 
-    private static function getCharsetValue(string $charset, string $driver): string
+    private static function getCharsetValue($charset, $driver)
     {
         if ('pdo_pgsql' === $driver) {
             return "options='--client_encoding=$charset'";

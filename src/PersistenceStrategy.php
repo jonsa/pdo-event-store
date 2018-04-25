@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo;
 
@@ -21,11 +20,11 @@ interface PersistenceStrategy
      * @param string $tableName
      * @return string[]
      */
-    public function createSchema(string $tableName): array;
+    public function createSchema($tableName);
 
-    public function columnNames(): array;
+    public function columnNames();
 
-    public function prepareData(Iterator $streamEvents): array;
+    public function prepareData(Iterator $streamEvents);
 
-    public function generateTableName(StreamName $streamName): string;
+    public function generateTableName(StreamName $streamName);
 }

@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo\Projection;
 
@@ -25,7 +24,7 @@ use ProophTest\EventStore\Pdo\TestUtil;
  */
 class PostgresEventStoreReadModelProjectorTest extends PdoEventStoreReadModelProjectorTest
 {
-    protected function setUp(): void
+    protected function setUp()
     {
         if (TestUtil::getDatabaseDriver() !== 'pdo_pgsql') {
             throw new \RuntimeException('Invalid database vendor');
@@ -49,7 +48,7 @@ class PostgresEventStoreReadModelProjectorTest extends PdoEventStoreReadModelPro
     /**
      * @test
      */
-    public function it_handles_missing_projection_table(): void
+    public function it_handles_missing_projection_table()
     {
         $this->expectException(\Prooph\EventStore\Pdo\Exception\RuntimeException::class);
         $this->expectExceptionMessage("Error 42P01. Maybe the projection table is not setup?\nError-Info: ERROR:  relation \"projections\" does not exist\nLINE 1: SELECT status FROM");
@@ -63,7 +62,7 @@ class PostgresEventStoreReadModelProjectorTest extends PdoEventStoreReadModelPro
         $projection
             ->fromStream('user-123')
             ->when([
-                UserCreated::class => function (array $state, UserCreated $event): array {
+                UserCreated::class => function (array $state, UserCreated $event) {
                     $this->stop();
 
                     return $state;

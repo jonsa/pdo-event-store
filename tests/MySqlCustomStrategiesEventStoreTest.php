@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo;
 
@@ -35,7 +34,7 @@ final class MySqlCustomStrategiesEventStoreTest extends MySqlEventStoreTest
      */
     protected $eventStore;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (TestUtil::getDatabaseDriver() !== 'pdo_mysql') {
             throw new \RuntimeException('Invalid database driver');
@@ -50,7 +49,7 @@ final class MySqlCustomStrategiesEventStoreTest extends MySqlEventStoreTest
     /**
      * @test
      */
-    public function it_loads_correctly_using_single_stream_per_aggregate_type_strategy(): void
+    public function it_loads_correctly_using_single_stream_per_aggregate_type_strategy()
     {
         $this->setupEventStoreWith(new CustomMySqlSingleStreamStrategy(), 5);
 
@@ -79,7 +78,7 @@ final class MySqlCustomStrategiesEventStoreTest extends MySqlEventStoreTest
     /**
      * @test
      */
-    public function it_fails_to_write_with_duplicate_version_and_mulitple_streams_per_aggregate_strategy(): void
+    public function it_fails_to_write_with_duplicate_version_and_mulitple_streams_per_aggregate_strategy()
     {
         $this->expectException(ConcurrencyException::class);
 

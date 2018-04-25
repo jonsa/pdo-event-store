@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace Prooph\EventStore\Pdo\Projection;
 
@@ -52,8 +51,8 @@ final class MariaDbProjectionManager implements ProjectionManager
     public function __construct(
         EventStore $eventStore,
         PDO $connection,
-        string $eventStreamsTable = 'event_streams',
-        string $projectionsTable = 'projections'
+        $eventStreamsTable = 'event_streams',
+        $projectionsTable = 'projections'
     ) {
         $this->eventStore = $eventStore;
         $this->connection = $connection;
@@ -69,34 +68,34 @@ final class MariaDbProjectionManager implements ProjectionManager
         }
     }
 
-    public function createQuery(): Query
+    public function createQuery()
     {
         return new PdoEventStoreQuery($this->eventStore, $this->connection, $this->eventStreamsTable);
     }
 
     public function createProjection(
-        string $name,
+        $name,
         array $options = []
-    ): Projector {
+    ) {
         return new PdoEventStoreProjector(
             $this->eventStore,
             $this->connection,
             $name,
             $this->eventStreamsTable,
             $this->projectionsTable,
-            $options[PdoEventStoreProjector::OPTION_LOCK_TIMEOUT_MS] ?? PdoEventStoreProjector::DEFAULT_LOCK_TIMEOUT_MS,
-            $options[PdoEventStoreProjector::OPTION_CACHE_SIZE] ?? PdoEventStoreProjector::DEFAULT_CACHE_SIZE,
-            $options[PdoEventStoreProjector::OPTION_PERSIST_BLOCK_SIZE] ?? PdoEventStoreProjector::DEFAULT_PERSIST_BLOCK_SIZE,
-            $options[PdoEventStoreProjector::OPTION_SLEEP] ?? PdoEventStoreProjector::DEFAULT_SLEEP,
-            $options[PdoEventStoreProjector::OPTION_PCNTL_DISPATCH] ?? PdoEventStoreProjector::DEFAULT_PCNTL_DISPATCH
+            isset($options[PdoEventStoreProjector::OPTION_LOCK_TIMEOUT_MS]) ? $options[PdoEventStoreProjector::OPTION_LOCK_TIMEOUT_MS] : PdoEventStoreProjector::DEFAULT_LOCK_TIMEOUT_MS,
+            isset($options[PdoEventStoreProjector::OPTION_CACHE_SIZE]) ? $options[PdoEventStoreProjector::OPTION_CACHE_SIZE] : PdoEventStoreProjector::DEFAULT_CACHE_SIZE,
+            isset($options[PdoEventStoreProjector::OPTION_PERSIST_BLOCK_SIZE]) ? $options[PdoEventStoreProjector::OPTION_PERSIST_BLOCK_SIZE] : PdoEventStoreProjector::DEFAULT_PERSIST_BLOCK_SIZE,
+            isset($options[PdoEventStoreProjector::OPTION_SLEEP]) ? $options[PdoEventStoreProjector::OPTION_SLEEP] : PdoEventStoreProjector::DEFAULT_SLEEP,
+            isset($options[PdoEventStoreProjector::OPTION_PCNTL_DISPATCH]) ? $options[PdoEventStoreProjector::OPTION_PCNTL_DISPATCH] : PdoEventStoreProjector::DEFAULT_PCNTL_DISPATCH
         );
     }
 
     public function createReadModelProjection(
-        string $name,
+        $name,
         ReadModel $readModel,
         array $options = []
-    ): ReadModelProjector {
+    ) {
         return new PdoEventStoreReadModelProjector(
             $this->eventStore,
             $this->connection,
@@ -104,14 +103,14 @@ final class MariaDbProjectionManager implements ProjectionManager
             $readModel,
             $this->eventStreamsTable,
             $this->projectionsTable,
-            $options[PdoEventStoreReadModelProjector::OPTION_LOCK_TIMEOUT_MS] ?? PdoEventStoreReadModelProjector::DEFAULT_LOCK_TIMEOUT_MS,
-            $options[PdoEventStoreReadModelProjector::OPTION_PERSIST_BLOCK_SIZE] ?? PdoEventStoreReadModelProjector::DEFAULT_PERSIST_BLOCK_SIZE,
-            $options[PdoEventStoreReadModelProjector::OPTION_SLEEP] ?? PdoEventStoreReadModelProjector::DEFAULT_SLEEP,
-            $options[PdoEventStoreReadModelProjector::OPTION_PCNTL_DISPATCH] ?? PdoEventStoreReadModelProjector::DEFAULT_PCNTL_DISPATCH
+            isset($options[PdoEventStoreReadModelProjector::OPTION_LOCK_TIMEOUT_MS]) ? $options[PdoEventStoreReadModelProjector::OPTION_LOCK_TIMEOUT_MS] : PdoEventStoreReadModelProjector::DEFAULT_LOCK_TIMEOUT_MS,
+            isset($options[PdoEventStoreReadModelProjector::OPTION_PERSIST_BLOCK_SIZE]) ? $options[PdoEventStoreReadModelProjector::OPTION_PERSIST_BLOCK_SIZE] : PdoEventStoreReadModelProjector::DEFAULT_PERSIST_BLOCK_SIZE,
+            isset($options[PdoEventStoreReadModelProjector::OPTION_SLEEP]) ? $options[PdoEventStoreReadModelProjector::OPTION_SLEEP] : PdoEventStoreReadModelProjector::DEFAULT_SLEEP,
+            isset($options[PdoEventStoreReadModelProjector::OPTION_PCNTL_DISPATCH]) ? $options[PdoEventStoreReadModelProjector::OPTION_PCNTL_DISPATCH] : PdoEventStoreReadModelProjector::DEFAULT_PCNTL_DISPATCH
         );
     }
 
-    public function deleteProjection(string $name, bool $deleteEmittedEvents): void
+    public function deleteProjection($name, $deleteEmittedEvents)
     {
         $sql = <<<EOT
 UPDATE `$this->projectionsTable` SET status = ? WHERE name = ? LIMIT 1;
@@ -158,7 +157,7 @@ EOT;
         }
     }
 
-    public function resetProjection(string $name): void
+    public function resetProjection($name)
     {
         $sql = <<<EOT
 UPDATE `$this->projectionsTable` SET status = ? WHERE name = ? LIMIT 1;
@@ -199,7 +198,7 @@ EOT;
         }
     }
 
-    public function stopProjection(string $name): void
+    public function stopProjection($name)
     {
         $sql = <<<EOT
 UPDATE `$this->projectionsTable` SET status = ? WHERE name = ? LIMIT 1;
@@ -240,7 +239,7 @@ EOT;
         }
     }
 
-    public function fetchProjectionNames(?string $filter, int $limit = 20, int $offset = 0): array
+    public function fetchProjectionNames($filter, $limit = 20, $offset = 0)
     {
         if (1 > $limit) {
             throw new OutOfRangeException(
@@ -298,7 +297,7 @@ SQL;
         return $projectionNames;
     }
 
-    public function fetchProjectionNamesRegex(string $filter, int $limit = 20, int $offset = 0): array
+    public function fetchProjectionNamesRegex($filter, $limit = 20, $offset = 0)
     {
         if (1 > $limit) {
             throw new OutOfRangeException(
@@ -357,7 +356,7 @@ SQL;
         return $projectionNames;
     }
 
-    public function fetchProjectionStatus(string $name): ProjectionStatus
+    public function fetchProjectionStatus($name)
     {
         $query = <<<SQL
 SELECT `status` FROM `$this->projectionsTable`
@@ -386,7 +385,7 @@ SQL;
         return ProjectionStatus::byValue($result->status);
     }
 
-    public function fetchProjectionStreamPositions(string $name): array
+    public function fetchProjectionStreamPositions($name)
     {
         $query = <<<SQL
 SELECT `position` FROM `$this->projectionsTable`
@@ -415,7 +414,7 @@ SQL;
         return json_decode($result->position, true);
     }
 
-    public function fetchProjectionState(string $name): array
+    public function fetchProjectionState($name)
     {
         $query = <<<SQL
 SELECT `state` FROM `$this->projectionsTable`

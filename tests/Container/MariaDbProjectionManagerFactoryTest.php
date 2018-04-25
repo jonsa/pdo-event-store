@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo\Container;
 
@@ -32,7 +31,7 @@ class MariaDbProjectionManagerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_service(): void
+    public function it_creates_service()
     {
         $config['prooph']['projection_manager']['default'] = [
             'connection' => 'my_connection',
@@ -64,7 +63,7 @@ class MariaDbProjectionManagerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_service_via_callstatic(): void
+    public function it_creates_service_via_callstatic()
     {
         $config['prooph']['projection_manager']['default'] = [
             'connection' => 'my_connection',
@@ -96,7 +95,7 @@ class MariaDbProjectionManagerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_container_given(): void
+    public function it_throws_exception_when_invalid_container_given()
     {
         $this->expectException(InvalidArgumentException::class);
 

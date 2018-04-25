@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
 
 namespace ProophTest\EventStore\Pdo\Projection;
 
@@ -42,7 +41,7 @@ abstract class PdoEventStoreProjectorCustomTablesTest extends AbstractEventStore
      */
     protected $connection;
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         TestUtil::tearDownDatabase();
     }
@@ -50,7 +49,7 @@ abstract class PdoEventStoreProjectorCustomTablesTest extends AbstractEventStore
     /**
      * @test
      */
-    public function it_updates_state_using_when_and_persists_with_block_size(): void
+    public function it_updates_state_using_when_and_persists_with_block_size()
     {
         $this->prepareEventStream('user-123');
 
@@ -63,13 +62,13 @@ abstract class PdoEventStoreProjectorCustomTablesTest extends AbstractEventStore
         $projection
             ->fromAll()
             ->when([
-                UserCreated::class => function ($state, Message $event) use ($testCase): array {
+                UserCreated::class => function ($state, Message $event) use ($testCase) {
                     $testCase->assertEquals('user-123', $this->streamName());
                     $state['name'] = $event->payload()['name'];
 
                     return $state;
                 },
-                UsernameChanged::class => function ($state, Message $event) use ($testCase): array {
+                UsernameChanged::class => function ($state, Message $event) use ($testCase) {
                     $testCase->assertEquals('user-123', $this->streamName());
                     $state['name'] = $event->payload()['name'];
 
@@ -88,19 +87,19 @@ abstract class PdoEventStoreProjectorCustomTablesTest extends AbstractEventStore
     /**
      * @test
      */
-    public function it_handles_existing_projection_table(): void
+    public function it_handles_existing_projection_table()
     {
         $this->prepareEventStream('user-123');
 
         $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection
-            ->init(function (): array {
+            ->init(function () {
                 return ['count' => 0];
             })
             ->fromAll()
             ->when([
-                UsernameChanged::class => function (array $state, Message $event): array {
+                UsernameChanged::class => function (array $state, Message $event) {
                     $state['count']++;
 
                     return $state;
@@ -116,7 +115,7 @@ abstract class PdoEventStoreProjectorCustomTablesTest extends AbstractEventStore
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed(): void
+    public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown event store instance given');
@@ -141,7 +140,7 @@ abstract class PdoEventStoreProjectorCustomTablesTest extends AbstractEventStore
     /**
      * @test
      */
-    public function it_throws_exception_when_unknown_event_store_instance_passed(): void
+    public function it_throws_exception_when_unknown_event_store_instance_passed()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown event store instance given');
